@@ -1,7 +1,4 @@
-use gandalf::{
-    interpreter::Environment,
-    lf::{Context, Family, FamilyName, Kind, Term, TermName, VarName},
-};
+use gandalf::lf::{eval::Environment, Context, Family, FamilyName, Kind, Term, TermName, VarName};
 
 fn main() {
     let mut environment = Environment::new();
