@@ -99,5 +99,19 @@ fn main() {
             ),
         )
         .unwrap();
+
+    assert_eq!(
+        family,
+        Family::App(
+            Box::new(Family::Const(even_family.clone())),
+            Term::App(
+                Box::new(Term::Const(s_term.clone())),
+                Box::new(Term::App(
+                    Box::new(Term::Const(s_term.clone())),
+                    Box::new(Term::Const(z_term.clone())),
+                ))
+            )
+        )
+    );
     println!("{:?}", family);
 }
