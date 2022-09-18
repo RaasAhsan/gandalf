@@ -1,7 +1,7 @@
 use std::collections::{HashMap, VecDeque};
 
+pub mod dsl;
 pub mod eval;
-pub mod typed;
 
 #[derive(Clone, Debug, PartialEq)]
 pub enum Kind {
