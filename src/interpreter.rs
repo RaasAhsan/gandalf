@@ -32,7 +32,7 @@ impl Environment {
         }
     }
 
-    fn check_kind(&self, ctx: &Context, kind: &Kind) -> Result<(), Error> {
+    pub fn check_kind(&self, ctx: &Context, kind: &Kind) -> Result<(), Error> {
         match kind {
             Kind::Type => Ok(()),
             Kind::Abs(f, k) => {
@@ -43,7 +43,7 @@ impl Environment {
         }
     }
 
-    fn check_family(&self, ctx: &Context, family: &Family) -> Result<Kind, Error> {
+    pub fn check_family(&self, ctx: &Context, family: &Family) -> Result<Kind, Error> {
         match family {
             Family::Const(name) => self
                 .signature
@@ -72,7 +72,7 @@ impl Environment {
         }
     }
 
-    fn check_term(&self, ctx: &Context, term: &Term) -> Result<Family, Error> {
+    pub fn check_term(&self, ctx: &Context, term: &Term) -> Result<Family, Error> {
         match term {
             Term::Var(name) => ctx.get(name).cloned().ok_or(Error::VarNotFound),
             Term::Const(name) => self

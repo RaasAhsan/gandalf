@@ -1,6 +1,6 @@
 use gandalf::{
     interpreter::Environment,
-    lf::{Family, FamilyName, Kind, Term, TermName, VarName},
+    lf::{Context, Family, FamilyName, Kind, Term, TermName, VarName},
 };
 
 fn main() {
@@ -70,4 +70,34 @@ fn main() {
             ),
         )
         .unwrap();
+
+    // let family = environment
+    //     .check_term(&Context::new(), &Term::Const(z_term.clone()))
+    //     .unwrap();
+    // println!("{:?}", family);
+
+    // let family = environment
+    //     .check_term(
+    //         &Context::new(),
+    //         &Term::App(
+    //             Box::new(Term::Const(s_term.clone())),
+    //             Box::new(Term::Const(z_term.clone())),
+    //         ),
+    //     )
+    //     .unwrap();
+    // println!("{:?}", family);
+
+    let family = environment
+        .check_term(
+            &Context::new(),
+            &Term::App(
+                Box::new(Term::App(
+                    Box::new(Term::Const(even_s_term.clone())),
+                    Box::new(Term::Const(z_term.clone())),
+                )),
+                Box::new(Term::Const(even_z_term.clone())),
+            ),
+        )
+        .unwrap();
+    println!("{:?}", family);
 }
