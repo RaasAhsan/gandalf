@@ -12,21 +12,21 @@ impl Environment {
         }
     }
 
-    pub fn declare_term(&mut self, name: &TermName, family: &Family) -> Result<(), Error> {
+    pub fn declare_term(&mut self, name: &TermName, family: &Family) -> Result<Term, Error> {
         if self.signature.get_term(name).is_none() {
             self.check_family(&Context::new(), family)?;
             self.signature.add_term(name.clone(), family.clone());
-            Ok(())
+            Ok(Term::Const(name.clone()))
         } else {
             Err(Error::TermAlreadyDefined)
         }
     }
 
-    pub fn declare_family(&mut self, name: &FamilyName, kind: &Kind) -> Result<(), Error> {
+    pub fn declare_family(&mut self, name: &FamilyName, kind: &Kind) -> Result<Family, Error> {
         if self.signature.get_family(name).is_none() {
             self.check_kind(&Context::new(), kind)?;
             self.signature.add_family(name.clone(), kind.clone());
-            Ok(())
+            Ok(Family::Const(name.clone()))
         } else {
             Err(Error::FamilyAlreadyDefined)
         }

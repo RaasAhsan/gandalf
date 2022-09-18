@@ -2,64 +2,51 @@ use gandalf::lf::{eval::Environment, Context, Family, FamilyName, Kind, Term, Te
 
 fn main() {
     let mut environment = Environment::new();
-    let nat_family = FamilyName::new("nat");
-    let z_term = TermName::new("z");
-    let s_term = TermName::new("s");
-
-    let even_family = FamilyName::new("even");
-    let even_z_term = TermName::new("even_z");
-    let even_s_term = TermName::new("even_s");
 
     // Declare nat type
-    environment
-        .declare_family(&nat_family, &Kind::Type)
+    let nat_family = environment
+        .declare_family(&FamilyName::new("nat"), &Kind::Type)
         .unwrap();
-    environment
-        .declare_term(&z_term, &Family::Const(nat_family.clone()))
+    let z_term = environment
+        .declare_term(&TermName::new("z"), &nat_family)
         .unwrap();
-    environment
+    let s_term = environment
         .declare_term(
-            &s_term,
-            &Family::Abs(
-                Box::new(Family::Const(nat_family.clone())),
-                Box::new(Family::Const(nat_family.clone())),
-            ),
+            &TermName::new("s"),
+            &Family::Abs(Box::new(nat_family.clone()), Box::new(nat_family.clone())),
         )
         .unwrap();
 
     // Declare even judgment
-    environment
+    let even_family = environment
         .declare_family(
-            &even_family,
-            &Kind::Abs(Family::Const(nat_family.clone()), Box::new(Kind::Type)),
+            &FamilyName::new("even"),
+            &Kind::Abs(nat_family.clone(), Box::new(Kind::Type)),
         )
         .unwrap();
-    environment
+    let even_z_term = environment
         .declare_term(
-            &even_z_term,
-            &Family::App(
-                Box::new(Family::Const(even_family.clone())),
-                Term::Const(z_term.clone()),
-            ),
+            &TermName::new("even_z"),
+            &Family::App(Box::new(even_family.clone()), z_term.clone()),
         )
         .unwrap();
-    environment
+    let even_s_term = environment
         .declare_term(
-            &even_s_term,
+            &TermName::new("even_s"),
             &Family::Abs(
-                Box::new(Family::Const(nat_family.clone())),
+                Box::new(nat_family),
                 Box::new(Family::Abs(
                     Box::new(Family::App(
-                        Box::new(Family::Const(even_family.clone())),
+                        Box::new(even_family.clone()),
                         Term::Var(VarName::new(0)),
                     )),
                     Box::new(Family::App(
-                        Box::new(Family::Const(even_family.clone())),
+                        Box::new(even_family.clone()),
                         Term::App(
-                            Box::new(Term::Const(s_term.clone())),
+                            Box::new(s_term.clone()),
                             Box::new(Term::App(
-                                Box::new(Term::Const(s_term.clone())),
-                                Box::new(Term::Const(z_term.clone())),
+                                Box::new(s_term.clone()),
+                                Box::new(z_term.clone()),
                             )),
                         ),
                     )),
@@ -68,31 +55,15 @@ fn main() {
         )
         .unwrap();
 
-    // let family = environment
-    //     .check_term(&Context::new(), &Term::Const(z_term.clone()))
-    //     .unwrap();
-    // println!("{:?}", family);
-
-    // let family = environment
-    //     .check_term(
-    //         &Context::new(),
-    //         &Term::App(
-    //             Box::new(Term::Const(s_term.clone())),
-    //             Box::new(Term::Const(z_term.clone())),
-    //         ),
-    //     )
-    //     .unwrap();
-    // println!("{:?}", family);
-
     let family = environment
         .check_term(
             &Context::new(),
             &Term::App(
                 Box::new(Term::App(
-                    Box::new(Term::Const(even_s_term.clone())),
-                    Box::new(Term::Const(z_term.clone())),
+                    Box::new(even_s_term.clone()),
+                    Box::new(z_term.clone()),
                 )),
-                Box::new(Term::Const(even_z_term.clone())),
+                Box::new(even_z_term.clone()),
             ),
         )
         .unwrap();
@@ -100,12 +71,12 @@ fn main() {
     assert_eq!(
         family,
         Family::App(
-            Box::new(Family::Const(even_family.clone())),
+            Box::new(even_family.clone()),
             Term::App(
-                Box::new(Term::Const(s_term.clone())),
+                Box::new(s_term.clone()),
                 Box::new(Term::App(
-                    Box::new(Term::Const(s_term.clone())),
-                    Box::new(Term::Const(z_term.clone())),
+                    Box::new(s_term.clone()),
+                    Box::new(z_term.clone()),
                 ))
             )
         )
