@@ -1,5 +1,5 @@
 use gandalf::lf::{
-    dsl::{family_abs, family_app, term_app},
+    dsl::{family_abs, family_app, term_app, term_var},
     eval::Environment,
     Context, Family, FamilyName, Kind, Term, TermName, VarName,
 };
@@ -40,13 +40,10 @@ fn main() {
             &family_abs(
                 nat_family,
                 family_abs(
-                    family_app(even_family.clone(), Term::Var(VarName::new(0))),
+                    family_app(even_family.clone(), term_var(0)),
                     family_app(
                         even_family.clone(),
-                        term_app(
-                            s_term.clone(),
-                            term_app(s_term.clone(), Term::Var(VarName::new(1))),
-                        ),
+                        term_app(s_term.clone(), term_app(s_term.clone(), term_var(1))),
                     ),
                 ),
             ),
