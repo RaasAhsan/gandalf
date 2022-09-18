@@ -12,8 +12,14 @@ impl Environment {
         }
     }
 
-    pub fn declare_term(&mut self, name: &TermName, family: Family) -> Result<(), Error> {
-        Ok(())
+    pub fn declare_term(&mut self, name: &TermName, family: &Family) -> Result<(), Error> {
+        if self.signature.get_term(name).is_none() {
+            self.check_family(&Context::new(), family)?;
+            self.signature.add_term(name.clone(), family.clone());
+            Ok(())
+        } else {
+            Err(Error::TermAlreadyDefined)
+        }
     }
 
     pub fn declare_family(&mut self, name: &FamilyName, kind: &Kind) -> Result<(), Error> {
@@ -97,6 +103,7 @@ impl Environment {
 pub enum Error {
     VarNotFound,
     FamilyAlreadyDefined,
+    TermAlreadyDefined,
     FamilyDoesntExist,
     TermDoesntExist,
     ExpectedTypeAbsToApply,
