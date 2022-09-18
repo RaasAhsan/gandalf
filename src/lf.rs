@@ -16,7 +16,10 @@ pub enum Family {
 impl Family {
     pub fn substitute_var(&mut self, index: usize, subst: &Term) {
         match self {
-            Family::Abs(_, f) => f.substitute_var(index + 1, subst),
+            Family::Abs(f1, f2) => {
+                f1.substitute_var(index, subst);
+                f2.substitute_var(index + 1, subst)
+            }
             Family::App(f, t) => {
                 f.substitute_var(index, subst);
                 t.substitute_var(index, subst);
