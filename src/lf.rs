@@ -153,3 +153,73 @@ impl Context {
         self.indexes.get(index.0)
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use crate::lf::Family;
+
+    use super::{Term, VarName};
+
+    #[test]
+    fn subst_term() {
+        let mut term = Term::Var(VarName(0));
+        term.substitute_var(0, &Term::Const("x".into()));
+        assert_eq!(term, Term::Const("x".into()));
+
+        let mut term = Term::Var(VarName(0));
+        term.substitute_var(0, &Term::Const("x".into()));
+        assert_eq!(term, Term::Const("x".into()));
+
+        let mut term = Term::App(
+            Box::new(Term::Var(VarName(0))),
+            Box::new(Term::Var(VarName(1))),
+        );
+        term.substitute_var(0, &Term::Const("x".into()));
+        assert_eq!(
+            term,
+            Term::App(
+                Box::new(Term::Const("x".into())),
+                Box::new(Term::Var(VarName(1))),
+            )
+        );
+    }
+
+    #[test]
+    fn subst_family() {
+        let mut family = Family::Const("nat".into());
+        family.substitute_var(0, &Term::Const("x".into()));
+        assert_eq!(family, Family::Const("nat".into()));
+
+        let mut family = Family::App(
+            Box::new(Family::Const("even".into())),
+            Term::Var(VarName::new(0)),
+        );
+        family.substitute_var(0, &Term::Const("z".into()));
+        assert_eq!(
+            family,
+            Family::App(
+                Box::new(Family::Const("even".into())),
+                Term::Const("z".into()),
+            )
+        );
+
+        let mut family = Family::Abs(
+            Box::new(Family::Const("nat".into())),
+            Box::new(Family::App(
+                Box::new(Family::Const("even".into())),
+                Term::Var(VarName::new(0)),
+            )),
+        );
+        family.substitute_var(0, &Term::Const("x".into()));
+        assert_eq!(
+            family,
+            Family::Abs(
+                Box::new(Family::Const("nat".into())),
+                Box::new(Family::App(
+                    Box::new(Family::Const("even".into())),
+                    Term::Var(VarName::new(0)),
+                )),
+            )
+        );
+    }
+}

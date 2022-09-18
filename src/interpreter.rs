@@ -44,7 +44,11 @@ impl Environment {
                 .get_family(name)
                 .cloned()
                 .ok_or(Error::FamilyDoesntExist),
-            Family::Abs(t, k) => todo!(),
+            Family::Abs(t, k) => {
+                let next_ctx = ctx.push(t);
+                let k = self.check_family(&next_ctx, k)?;
+                Ok(k)
+            }
             Family::App(f, t) => {
                 let fk = self.check_family(ctx, f)?;
                 match fk {
