@@ -67,5 +67,4 @@ fn main() {
             term_app(s_term.clone(), term_app(s_term.clone(), z_term.clone()))
         )
     );
-    println!("{:?}", family);
 }
